@@ -56,7 +56,7 @@ Note that in addition to the hook, the component must be wrapped with `withError
 
 For a full project example take a look at the [examples directory](https://github.com/tatethurston/react-use-error-boundary/blob/main/examples).
 
-⚠️ Known Limitations
+## Known Limitations ⚠️
 
 Because React recreates the component tree from scratch after catching an error, the component using the `useErrorBoundary` hook is always remounted after an error is encountered. This means any state will be reinitialized: `useState` and `useRef` hooks will be reinitialized to their initial value and will _not_ persist across caught errors.
 
