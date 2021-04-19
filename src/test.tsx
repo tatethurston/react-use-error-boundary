@@ -1,9 +1,9 @@
-import React, { FC, useState } from "react";
-import { useErrorBoundary } from ".";
+import React, { FC, useState, useEffect } from "react";
+import { useErrorBoundary, withErrorBoundary } from ".";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-// suppress error boundary warnings
+// suppress error boundary console errors in test output
 jest.spyOn(global.console, "error").mockImplementation();
 
 const ThrowError: FC = () => {
@@ -12,112 +12,71 @@ const ThrowError: FC = () => {
 
 const HappyPath: FC = () => <div>Happy Path</div>;
 
-const Fallback: FC = () => <div>Fallback</div>;
-
 describe(useErrorBoundary, () => {
   it("invokes the componentDidCatch handler when there is an error", () => {
     const componentDidCatch = jest.fn();
 
-    const Example: FC = () => {
-      const [ErrorBoundary] = useErrorBoundary(componentDidCatch);
+    const Example: FC = withErrorBoundary(() => {
+      const [error] = useErrorBoundary(componentDidCatch);
+      if (error) {
+        return null;
+      }
 
-      return (
-        <ErrorBoundary>
-          <ThrowError />
-        </ErrorBoundary>
-      );
-    };
+      return <ThrowError />;
+    });
+
     render(<Example />);
 
     expect(componentDidCatch).toHaveBeenCalledTimes(1);
   });
 
-  it("renders the fallback when there is an error", () => {
-    const Example: FC = () => {
-      const [ErrorBoundary] = useErrorBoundary();
-
-      return (
-        <ErrorBoundary fallback={<Fallback />}>
-          <ThrowError />
-          <HappyPath />
-        </ErrorBoundary>
-      );
-    };
-    render(<Example />);
-
-    expect(screen.queryByText("Fallback")).not.toBeNull();
-    expect(screen.queryByText("Happy Path")).toBeNull();
-  });
-
-  it("empty renders when fallback is not provided and there is an error", () => {
-    const Example: FC = () => {
-      const [ErrorBoundary] = useErrorBoundary();
-
-      return (
-        <ErrorBoundary>
-          <ThrowError />
-          <HappyPath />
-        </ErrorBoundary>
-      );
-    };
-    render(<Example />);
-
-    expect(screen.queryByText("Happy Path")).toBeNull();
-  });
-
   it("does not invoke the componentDidCatch handler when there is not an error", () => {
     const componentDidCatch = jest.fn();
 
-    const Example: FC = () => {
-      const [ErrorBoundary] = useErrorBoundary(componentDidCatch);
+    const Example: FC = withErrorBoundary(() => {
+      const [error] = useErrorBoundary(componentDidCatch);
+      if (error) {
+        return null;
+      }
 
-      return (
-        <ErrorBoundary>
-          <HappyPath />
-        </ErrorBoundary>
-      );
-    };
+      return <HappyPath />;
+    });
+
     render(<Example />);
 
     expect(componentDidCatch).toHaveBeenCalledTimes(0);
   });
 
-  it("renders children when there is not an error", () => {
-    const componentDidCatch = jest.fn();
+  const Example: FC = withErrorBoundary(() => {
+    const [shouldThrow, setShouldThrow] = useState(true);
+    const [error, resetError] = useErrorBoundary(() => {
+      setShouldThrow(false);
+      console.log("componentDidCatch called??");
+    });
+    console.log({ error, shouldThrow });
 
-    const Example: FC = () => {
-      const [ErrorBoundary] = useErrorBoundary(componentDidCatch);
+    useEffect(() => {
+      console.log("MOUNT");
+    }, []);
 
-      return (
-        <ErrorBoundary fallback={Fallback}>
-          <HappyPath />
-        </ErrorBoundary>
-      );
-    };
-    render(<Example />);
-
-    expect(screen.queryByText("Fallback")).toBeNull();
-    expect(screen.queryByText("Happy Path")).not.toBeNull();
-  });
-
-  it("resetErrors", () => {
-    const Example: FC = () => {
-      const [shouldThrow, setShouldThrow] = useState(true);
-      const [ErrorBoundary, error, resetError] = useErrorBoundary(() =>
-        setShouldThrow(false)
-      );
-
+    if (error) {
       return (
         <>
-          {error && <div>Error</div>}
+          <div>Error</div>
           <button onClick={resetError}>Reset Error</button>
-          <ErrorBoundary>
-            {shouldThrow && <ThrowError />}
-            <HappyPath />
-          </ErrorBoundary>
         </>
       );
-    };
+    }
+
+    return (
+      <>
+        {shouldThrow && <ThrowError />}
+        <HappyPath />
+      </>
+    );
+  });
+
+  it.only("invoking resetError handler resets the error state", () => {
     render(<Example />);
 
     expect(screen.queryByText("Error")).not.toBeNull();

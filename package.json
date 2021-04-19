@@ -11,10 +11,10 @@
   "bugs": {
     "url": "https://github.com/tatethurston/react-use-error-boundary/issues"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "files": [
-    "dist/index.js"
+    "dist/index.d.ts"
   ],
   "scripts": {
     "build": "yarn clean && yarn tsc",
@@ -32,7 +32,7 @@
   },
   "types": "dist/index.d.ts",
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": ">= 16.8"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.6",

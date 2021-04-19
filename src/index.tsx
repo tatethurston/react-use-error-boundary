@@ -4,24 +4,21 @@ import React, {
   useCallback,
   ComponentLifecycle,
   FC,
-  ReactNode,
+  createContext,
+  useContext,
+  MutableRefObject,
+  useMemo,
+  useRef,
+  ComponentType,
 } from "react";
-
-interface ErrorBoundaryPublicProps {
-  fallback?: ReactNode;
-}
-
-interface ErrorBoundaryPrivateProps {
-  error: unknown;
-  onError: NonNullable<ComponentDidCatch>;
-}
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ComponentDidCatch = ComponentLifecycle<{}, {}>["componentDidCatch"];
 
-interface ErrorBoundaryProps
-  extends ErrorBoundaryPublicProps,
-    ErrorBoundaryPrivateProps {}
+interface ErrorBoundaryProps {
+  error: unknown;
+  onError: NonNullable<ComponentDidCatch>;
+}
 
 class ErrorBoundary extends Component<ErrorBoundaryProps> {
   displayName = "ReactUseErrorBoundary";
@@ -31,36 +28,70 @@ class ErrorBoundary extends Component<ErrorBoundaryProps> {
   }
 
   render() {
-    if (this.props.error) {
-      return this.props.fallback ?? null;
-    }
     return this.props.children;
   }
 }
 
-type UseErrorBoundaryReturn = [
-  FC<ErrorBoundaryPublicProps>,
-  boolean,
-  () => void
-];
+const noop = () => false;
+
+interface ErrorBoundaryCtx {
+  componentDidCatch: MutableRefObject<ComponentDidCatch>;
+  error: boolean;
+  setError: (error: boolean) => void;
+}
+
+const errorBoundaryContext = createContext<ErrorBoundaryCtx>({
+  componentDidCatch: { current: undefined },
+  error: false,
+  setError: noop,
+});
+
+export const ErrorBoundaryContext: FC = ({ children }) => {
+  const [error, setError] = useState(false);
+  const componentDidCatch = useRef<ComponentDidCatch>();
+  const ctx = useMemo(
+    () => ({
+      componentDidCatch,
+      error,
+      setError,
+    }),
+    [error]
+  );
+  return (
+    <errorBoundaryContext.Provider value={ctx}>
+      <ErrorBoundary
+        error={error}
+        onError={(...args) => {
+          setError(true);
+          componentDidCatch.current?.(...args);
+        }}
+      >
+        {children}
+      </ErrorBoundary>
+    </errorBoundaryContext.Provider>
+  );
+};
+ErrorBoundaryContext.displayName = "ReactUseErrorBoundaryContext";
+
+export function withErrorBoundary<Props = Record<string, unknown>>(
+  WrappedComponent: ComponentType<Props>
+): FC<Props> {
+  return (props: Props) => (
+    <ErrorBoundaryContext>
+      <WrappedComponent {...props} />
+    </ErrorBoundaryContext>
+  );
+}
+
+type UseErrorBoundaryReturn = [error: boolean, resetError: () => void];
 
 export function useErrorBoundary(
   componentDidCatch?: ComponentDidCatch
 ): UseErrorBoundaryReturn {
-  const [error, setError] = useState(false);
-  const resetError = useCallback(() => setError(false), []);
-  const errorBoundary = useCallback(
-    (props: ErrorBoundaryPublicProps) => (
-      <ErrorBoundary
-        {...props}
-        error={error}
-        onError={(...args) => {
-          setError(true);
-          componentDidCatch?.(...args);
-        }}
-      />
-    ),
-    [componentDidCatch, error]
-  );
-  return [errorBoundary, error, resetError];
+  const ctx = useContext(errorBoundaryContext);
+  ctx.componentDidCatch.current = componentDidCatch;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const resetError = useCallback(() => ctx.setError(false), []);
+
+  return [ctx.error, resetError];
 }
