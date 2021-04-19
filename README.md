@@ -17,7 +17,7 @@ This library draws inspiration from Preact's [useErrorBoundary](https://preactjs
 
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
 
-````jsx
+```jsx
 // error = The error that was caught or `undefined` if nothing errored.
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
@@ -28,8 +28,8 @@ const [error, resetError] = useErrorBoundary();
 For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered.
 
 ```jsx
-const [error] = useErrorBoundary(error => callMyApi(error.message));
-````
+const [error] = useErrorBoundary((error) => callMyApi(error.message));
+```
 
 A full example may look like this:
 
