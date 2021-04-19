@@ -33,7 +33,7 @@ const [error] = useErrorBoundary((error) => callMyApi(error.message));
 
 A full example may look like this:
 
-```
+```jsx
 const App = withErrorBoundary({ children }) => {
   const [error, resetError] = useErrorBoundary(
     error => callMyApi(error.message)
