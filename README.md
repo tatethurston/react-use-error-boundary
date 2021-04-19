@@ -56,6 +56,8 @@ const App = withErrorBoundary({ children }) => {
 
 Note that in addition to the hook, the component must be wrapped with `withErrorBoundary`. This function wraps the component with an Error Boundary and a context provider. Alternatively, the `<ErrorBoundaryContext>` component from this library may be placed in your component tree, above each component using `useErrorBoundary`.
 
+This was done to avoid hooking into React internals, which would otherwise be required. The hope is that the eventual React hook solution will present a similar API, and users can easily migrate by removing the `withErrorBoundary` wrapper.
+
 For a full project example take a look at the [examples directory](https://github.com/tatethurston/react-use-error-boundary/blob/main/examples).
 
 ## Known Limitations ⚠️
