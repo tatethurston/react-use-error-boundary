@@ -34,6 +34,8 @@ const [error] = useErrorBoundary((error) => callMyApi(error.message));
 A full example may look like this:
 
 ```jsx
+import { withErrorBoundary, useErrorBoundary } from "react-use-error-boundary";
+
 const App = withErrorBoundary({ children }) => {
   const [error, resetError] = useErrorBoundary(
     error => callMyApi(error.message)
