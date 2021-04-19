@@ -24,6 +24,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps> {
   displayName = "ReactUseErrorBoundary";
 
   componentDidCatch(...args: Parameters<NonNullable<ComponentDidCatch>>) {
+    // silence React warning:
+    // ErrorBoundary: Error boundaries should implement getDerivedStateFromError(). In that method, return a state update to display an error message or fallback UI
+    this.setState({});
     this.props.onError(...args);
   }
 
@@ -78,7 +81,7 @@ export function withErrorBoundary<Props = Record<string, unknown>>(
 ): FC<Props> {
   return (props: Props) => (
     <ErrorBoundaryContext>
-      <WrappedComponent {...props} />
+      <WrappedComponent key="WrappedComponent" {...props} />
     </ErrorBoundaryContext>
   );
 }
@@ -90,8 +93,10 @@ export function useErrorBoundary(
 ): UseErrorBoundaryReturn {
   const ctx = useContext(errorBoundaryContext);
   ctx.componentDidCatch.current = componentDidCatch;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const resetError = useCallback(() => ctx.setError(false), []);
+  const resetError = useCallback(() => {
+    ctx.setError(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return [ctx.error, resetError];
 }

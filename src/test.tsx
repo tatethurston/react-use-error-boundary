@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { useErrorBoundary, withErrorBoundary } from ".";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -47,44 +47,54 @@ describe(useErrorBoundary, () => {
     expect(componentDidCatch).toHaveBeenCalledTimes(0);
   });
 
-  const Example: FC = withErrorBoundary(() => {
-    const [shouldThrow, setShouldThrow] = useState(true);
-    const [error, resetError] = useErrorBoundary(() => {
-      setShouldThrow(false);
-      console.log("componentDidCatch called??");
-    });
-    console.log({ error, shouldThrow });
+  it("invoking resetError handler resets the error state", () => {
+    const Example: FC = withErrorBoundary(() => {
+      const [shouldThrow, setShouldThrow] = useState(false);
+      const [error, resetError] = useErrorBoundary();
 
-    useEffect(() => {
-      console.log("MOUNT");
-    }, []);
+      if (error) {
+        return (
+          <>
+            <div>Error</div>
+            <button
+              onClick={() => {
+                setShouldThrow(false);
+                resetError();
+              }}
+            >
+              Reset Error
+            </button>
+          </>
+        );
+      }
 
-    if (error) {
       return (
         <>
-          <div>Error</div>
-          <button onClick={resetError}>Reset Error</button>
+          <div>Happy Path</div>
+          {shouldThrow && <ThrowError />}
+          <button
+            onClick={() => {
+              setShouldThrow(true);
+            }}
+          >
+            Throw Error
+          </button>
         </>
       );
-    }
+    });
 
-    return (
-      <>
-        {shouldThrow && <ThrowError />}
-        <HappyPath />
-      </>
-    );
-  });
-
-  it.only("invoking resetError handler resets the error state", () => {
     render(<Example />);
+    expect(screen.queryByText("Happy Path")).not.toBeNull();
+    expect(screen.queryByText("Error")).toBeNull();
 
-    expect(screen.queryByText("Error")).not.toBeNull();
+    userEvent.click(screen.getByText("Throw Error"));
+
     expect(screen.queryByText("Happy Path")).toBeNull();
+    expect(screen.queryByText("Error")).not.toBeNull();
 
     userEvent.click(screen.getByText("Reset Error"));
 
-    expect(screen.queryByText("Error")).toBeNull();
     expect(screen.queryByText("Happy Path")).not.toBeNull();
+    expect(screen.queryByText("Error")).toBeNull();
   });
 });

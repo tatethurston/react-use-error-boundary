@@ -748,10 +748,10 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react-use-error-boundary@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/react-use-error-boundary/-/react-use-error-boundary-0.0.1.tgz#7e0fcca54cdb03c19b32b2eddcea23563211b317"
-  integrity sha512-mZsO6E+zoQ0fQpRasJo4t4bhom9HFd+CbgTG7OtLm7ppeaSIymRUMzk7Lc3d4XxAEtCnJaw8StUQByvpjtY7Xw==
+react-use-error-boundary@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-use-error-boundary/-/react-use-error-boundary-0.0.2.tgz#6956799900a44fe7629c51679da835c4c6dd16c0"
+  integrity sha512-W20BMCLv70RV0/ozdIJQQNQfhyvmAWtTvUJx+v0Iuo7Sc/YkWJ3RCv7NoO3ZEkjMQyMD7AVjv28UsEWPROms3Q==
 
 react@^17.0.2:
   version "17.0.2"

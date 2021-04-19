@@ -1,6 +1,6 @@
 {
   "name": "react-use-error-boundary",
-  "description": "A React hook for error boundaries in function components",
+  "description": "A React error boundary hook for function components",
   "license": "MIT",
   "author": "Tate <tatethurston@gmail.com>",
   "homepage": "https://github.com/tatethurston/react-use-error-boundary#readme",
@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/tatethurston/react-use-error-boundary/issues"
   },
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "dist/index.js",
   "files": [
     "dist/index.d.ts"
