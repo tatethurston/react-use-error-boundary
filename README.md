@@ -4,20 +4,20 @@
 
 <br />
 
-<a href="https://www.npmjs.com/package/eslint-plugin-react-react-use-error-boundary">
-  <img src="https://img.shields.io/npm/v/eslint-plugin-react-react-use-error-boundary.svg">
+<a href="https://www.npmjs.com/package/react-use-error-boundary">
+  <img src="https://img.shields.io/npm/v/react-use-error-boundary.svg">
 </a>
-<a href="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/blob/master/LICENSE">
-  <img src="https://img.shields.io/npm/l/eslint-plugin-react-react-use-error-boundary.svg">
+<a href="https://github.com/tatethurston/react-use-error-boundary/blob/master/LICENSE">
+  <img src="https://img.shields.io/npm/l/react-use-error-boundary.svg">
 </a>
-<a href="https://bundlephobia.com/result?p=eslint-plugin-react-react-use-error-boundary">
-  <img src="https://img.shields.io/bundlephobia/minzip/eslint-plugin-react-react-use-error-boundary">
+<a href="https://bundlephobia.com/result?p=react-use-error-boundary">
+  <img src="https://img.shields.io/bundlephobia/minzip/react-use-error-boundary">
 </a>
-<a href="https://www.npmjs.com/package/eslint-plugin-react-react-use-error-boundary">
-  <img src="https://img.shields.io/npm/dy/eslint-plugin-react-react-use-error-boundary.svg">
+<a href="https://www.npmjs.com/package/react-use-error-boundary">
+  <img src="https://img.shields.io/npm/dy/react-use-error-boundary.svg">
 </a>
-<a href="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/actions/workflows/ci.yml">
-  <img src="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/actions/workflows/ci.yml/badge.svg">
+<a href="https://github.com/tatethurston/react-use-error-boundary/actions/workflows/ci.yml">
+  <img src="https://github.com/tatethurston/react-use-error-boundary/actions/workflows/ci.yml/badge.svg">
 </a>
 
 ## What is this? 🧐
