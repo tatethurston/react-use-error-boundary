@@ -2,6 +2,24 @@
 
 <blockquote>A React error boundary hook for function components</blockquote>
 
+<br />
+
+<a href="https://www.npmjs.com/package/eslint-plugin-react-react-use-error-boundary">
+  <img src="https://img.shields.io/npm/v/eslint-plugin-react-react-use-error-boundary.svg">
+</a>
+<a href="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/blob/master/LICENSE">
+  <img src="https://img.shields.io/npm/l/eslint-plugin-react-react-use-error-boundary.svg">
+</a>
+<a href="https://bundlephobia.com/result?p=eslint-plugin-react-react-use-error-boundary">
+  <img src="https://img.shields.io/bundlephobia/minzip/eslint-plugin-react-react-use-error-boundary">
+</a>
+<a href="https://www.npmjs.com/package/eslint-plugin-react-react-use-error-boundary">
+  <img src="https://img.shields.io/npm/dy/eslint-plugin-react-react-use-error-boundary.svg">
+</a>
+<a href="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/actions/workflows/ci.yml">
+  <img src="https://github.com/tatethurston/eslint-plugin-react-react-use-error-boundary/actions/workflows/ci.yml/badge.svg">
+</a>
+
 ## What is this? 🧐
 
 React 16 introduced [Error Boundaries](https://reactjs.org/docs/error-boundaries.html). As of React 17, there still is [not an equivalent hook](https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes) for function components.
@@ -62,7 +80,7 @@ For a full project example take a look at the [examples directory](https://githu
 
 ## Known Limitations ⚠️
 
-Because React recreates the component tree from scratch after catching an error, the component using the `useErrorBoundary` hook is always remounted after an error is encountered. This means any state will be reinitialized: `useState` and `useRef` hooks will be reinitialized to their initial value and will _not_ persist across caught errors.
+Because React recreates the component tree from scratch after catching an error, the component using the `useErrorBoundary` hook is always remounted after an error is encountered. This means any state will be reinitialized: `useState` and `useRef` hooks will be reinitialized to their initial value and will _not_ persist across caught errors. Any values that need to be preserved across error catching must be lifted into a parent component above the component wrapped in `withErrorBoundary`.
 
 ## Highlights
 
@@ -70,7 +88,7 @@ Because React recreates the component tree from scratch after catching an error,
 
 🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
 
-🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@0.0.1)
+🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@0.0.5)
 
 ## Contributing 👫
 
