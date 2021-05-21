@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
+    "allowJs": false,
+    "declaration": true,
     "esModuleInterop": true,
-    "jsx": "react",
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "noEmitOnError": false,
     "outDir": "dist",
     "removeComments": true,
@@ -14,8 +16,7 @@
     "skipLibCheck": true,
     "sourceMap": false,
     "strict": true,
-    "target": "ES2015",
-    "declaration": true
+    "target": "ESNext"
   },
   "exclude": ["node_modules", "dist", "examples"]
 }

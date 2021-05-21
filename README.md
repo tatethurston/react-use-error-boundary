@@ -31,6 +31,12 @@ This library draws inspiration from Preact's [useErrorBoundary](https://preactjs
 1. Add this package to your project:
    - `yarn add react-use-error-boundary`
 
+Just trying things out or want to skip the build step? Use the unpkg URL:
+
+```
+<script src="https://unpkg.com/react-use-error-boundary/dist/index.production.js"></script>
+```
+
 ## Examples 🚀
 
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
@@ -86,9 +92,11 @@ Because React recreates the component tree from scratch after catching an error,
 
 🎁 Zero run time dependencies
 
-🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
-
 🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@0.0.5)
+
+🌲 [Tree shakeable](https://webpack.js.org/guides/tree-shaking/)
+
+🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
 
 ## Contributing 👫
 
