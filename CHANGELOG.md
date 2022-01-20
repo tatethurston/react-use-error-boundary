@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.2
+
+Internal: remove unnecessary files when publishing to npm registry.
+
 ## v1.0.1
 
 Internal: fix CI publishes.
