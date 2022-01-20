@@ -1,6 +1,6 @@
 {
   "name": "react-use-error-boundary",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A React error boundary hook for function components",
   "license": "MIT",
   "author": "Tate <tatethurston@gmail.com>",
@@ -30,9 +30,7 @@
     "test": "jest src/*",
     "test:ci": "yarn test --coverage",
     "typecheck": "yarn tsc --noEmit",
-    "typecheck:watch": "yarn typecheck --watch",
-    "version": "git add -A package.json",
-    "postversion": "git push && git push --tags"
+    "typecheck:watch": "yarn typecheck --watch"
   },
   "sideEffects": false,
   "types": "dist/index.d.ts",
