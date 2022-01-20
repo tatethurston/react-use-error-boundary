@@ -18,5 +18,5 @@
     "strict": true,
     "target": "ESNext"
   },
-  "exclude": ["node_modules", "dist", "examples"]
+  "exclude": ["node_modules", "dist", "example"]
 }

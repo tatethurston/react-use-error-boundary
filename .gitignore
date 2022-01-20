@@ -1,5 +1,5 @@
 node_modules
 dist/*
-examples/dist/*
-!examples/dist/index.html
+example/dist/*
+!example/dist/index.html
 
