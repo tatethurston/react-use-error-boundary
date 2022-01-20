@@ -85,7 +85,7 @@ Note that in addition to the hook, the component must be wrapped with `withError
 
 This was done to avoid hooking into React internals, which would otherwise be required. The hope is that the eventual React hook solution will present a similar API, and users can easily migrate by removing the `withErrorBoundary` wrapper.
 
-For a full project example take a look at the [examples directory](https://github.com/tatethurston/react-use-error-boundary/blob/main/examples).
+For a full project example take a look at the [example](https://github.com/tatethurston/react-use-error-boundary/blob/main/example).
 
 ## Known Limitations ⚠️
 
@@ -97,7 +97,7 @@ Because React recreates the component tree from scratch after catching an error,
 
 🎁 Zero run time dependencies
 
-🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@1.0.0)
+🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@1.0.2)
 
 🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
 
