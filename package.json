@@ -27,7 +27,7 @@
     "lint:fix:md": "prettier --write '*.md'",
     "lint:fix:package": "prettier-package-json --write package.json",
     "lint:fix:ts": "eslint --fix './src/**/*.ts{,x}'",
-    "test": "yarn tsc && jest --testTimeout 5000 --rootDir dist",
+    "test": "jest src/*",
     "test:ci": "yarn test --coverage",
     "typecheck": "yarn tsc --noEmit",
     "typecheck:watch": "yarn typecheck --watch",
