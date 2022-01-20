@@ -19,6 +19,9 @@
 <a href="https://github.com/tatethurston/react-use-error-boundary/actions/workflows/ci.yml">
   <img src="https://github.com/tatethurston/react-use-error-boundary/actions/workflows/ci.yml/badge.svg">
 </a>
+<a href="https://codecov.io/gh/tatethurston/react-use-error-boundary">
+  <img src="https://img.shields.io/codecov/c/github/tatethurston/react-use-error-boundary/main.svg?style=flat-square">
+</a>
 
 ## What is this? 🧐
 
@@ -90,13 +93,15 @@ Because React recreates the component tree from scratch after catching an error,
 
 ## Highlights
 
+🌲 [Tree shakeable](https://webpack.js.org/guides/tree-shaking/). Ships [ES Modules](https://webpack.js.org/guides/ecma-script-modules/).
+
 🎁 Zero run time dependencies
 
-🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@0.0.5)
-
-🌲 [Tree shakeable](https://webpack.js.org/guides/tree-shaking/)
+🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@1.0.0)
 
 🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
+
+🛠 This library follows [semantic versioning](https://docs.npmjs.com/about-semantic-versioning)
 
 ## Contributing 👫
 

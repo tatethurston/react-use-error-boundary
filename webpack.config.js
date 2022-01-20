@@ -10,7 +10,7 @@ module.exports = {
     path: resolve(__dirname, "dist"),
     filename: "index.production.js",
     library: {
-      name: "react-itertools",
+      name: "react-use-error-boundary",
       type: "umd",
     },
   },
