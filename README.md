@@ -52,10 +52,12 @@ Whenever the component or a child component throws an error you can use this hoo
 const [error, resetError] = useErrorBoundary();
 ```
 
-For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered. The callback is invoked with `error` and `errorInfor` which are identical to [React's componentDidCatch arguments]( https://reactjs.org/docs/error-boundaries.html). Identical to React, `error` is the error that was thrown, and `errorInfo` is the component stack trace.
+For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered. The callback is invoked with `error` and `errorInfor` which are identical to [React's componentDidCatch arguments](https://reactjs.org/docs/error-boundaries.html). Identical to React, `error` is the error that was thrown, and `errorInfo` is the component stack trace.
 
 ```jsx
-const [error] = useErrorBoundary((error, errorInfo) => logErrorToMyService(error, errorInfo));
+const [error] = useErrorBoundary((error, errorInfo) =>
+  logErrorToMyService(error, errorInfo)
+);
 ```
 
 A full example may look like this:
@@ -89,7 +91,10 @@ This was done to avoid hooking into React internals, which would otherwise be re
 Alternatively, the `<ErrorBoundaryContext>` component from this library may be placed in your component tree, above each component using `useErrorBoundary`, instead of wrapping the component with `withErrorBoundary`:
 
 ```jsx
-import { ErrorBoundaryContext, useErrorBoundary } from "react-use-error-boundary";
+import {
+  ErrorBoundaryContext,
+  useErrorBoundary,
+} from "react-use-error-boundary";
 
 const App = ({ children }) => {
   // ... see function body in example above
