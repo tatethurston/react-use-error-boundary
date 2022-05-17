@@ -52,10 +52,10 @@ Whenever the component or a child component throws an error you can use this hoo
 const [error, resetError] = useErrorBoundary();
 ```
 
-For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered.
+For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered. The callback is passed both the `error` and `errorInfor` which are identical to [React's componentDidCatch arguments]( https://reactjs.org/docs/error-boundaries.html). `error` is the error that was thrown, and `errorInfo` is the component stack trace.
 
 ```jsx
-const [error] = useErrorBoundary((error) => callMyApi(error.message));
+const [error] = useErrorBoundary((error, errorInfo) => logErrorToMyService(error, errorInfo));
 ```
 
 A full example may look like this:
@@ -65,7 +65,7 @@ import { withErrorBoundary, useErrorBoundary } from "react-use-error-boundary";
 
 const App = withErrorBoundary({ children }) => {
   const [error, resetError] = useErrorBoundary(
-    error => callMyApi(error.message)
+    (error, errorInfo) => logErrorToMyService(error, errorInfo)
   );
 
   if (error) {
