@@ -45,7 +45,7 @@ Just trying things out or want to skip the build step? Use the unpkg URL:
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
 
 ```jsx
-// error = The error that was caught or `undefined` if nothing errored.
+// error = Whether an error was caught (true/false).
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
 //   to recover from errors.
@@ -71,7 +71,7 @@ const App = withErrorBoundary({ children }) => {
   if (error) {
     return (
       <div>
-        <p>{error.message}</p>
+        <p>An error occurred!</p>
         <button onClick={resetError}>Try again</button>
       </div>
     );
