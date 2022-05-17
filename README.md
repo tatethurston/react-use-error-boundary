@@ -45,17 +45,17 @@ Just trying things out or want to skip the build step? Use the unpkg URL:
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
 
 ```jsx
-// error = `undefined`, or an object with the `error` and `errorInfo` keys.
+// error = `undefined`, or an Error object
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
 //   to recover from errors.
-const [errorData, resetError] = useErrorBoundary();
+const [error, resetError] = useErrorBoundary();
 ```
 
 For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered.
 
 ```jsx
-const [errorData] = useErrorBoundary((error, errorInfo) =>
+const [error] = useErrorBoundary((error, errorInfo) =>
   logErrorToMyService(error, errorInfo)
 );
 ```
@@ -66,14 +66,12 @@ A full example may look like this:
 import { withErrorBoundary, useErrorBoundary } from "react-use-error-boundary";
 
 const App = withErrorBoundary(({ children }) => {
-  const [errorData, resetError] = useErrorBoundary(
+  const [error, resetError] = useErrorBoundary(
     // You can optionally log the error to an error reporting service
     (error, errorInfo) => logErrorToMyService(error, errorInfo)
   );
 
-  if (errorData) {
-    const { error } = errorData;
-
+  if (error) {
     return (
       <div>
         <p>{error.message}</p>

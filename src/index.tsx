@@ -10,22 +10,53 @@ import React, {
   useMemo,
   useRef,
   ComponentType,
-  ErrorInfo,
 } from "react";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ComponentDidCatch = ComponentLifecycle<{}, {}>["componentDidCatch"];
 
-type ErrorType = ErrorData | undefined;
-
-interface ErrorData {
-  error: unknown;
-  errorInfo: ErrorInfo;
-}
+type ErrorType = WrappedError | Error | undefined;
 
 interface ErrorBoundaryProps {
   error: ErrorType;
   onError: NonNullable<ComponentDidCatch>;
+}
+
+/**
+ * Wrapper around the `Error` class to allow us to create an error
+ * message while retaining the originally thrown data as an attribute
+ * on the class.
+ */
+export class WrappedError extends Error {
+  /**
+   * A reference to the original data passed to the error constructor,
+   * before being stringified into the error message.
+   */
+  originalData: unknown;
+
+  constructor(data?: unknown) {
+    let stringifiedData =
+      "It was not possible to parse the data thrown as a string.";
+
+    /*
+      Some values cannot be converted into a string, such as Symbols
+      or certain Object instances (e.g., `Object.create(null)`).
+
+      This try/catch ensures that our silent error wrapper doesn't
+      cause an unexpected error for the user, bricking the React app
+      when we're meant to be preventing errors doing so.
+    */
+    try {
+      stringifiedData = String(data);
+    } catch {
+      // Ignore errors
+    }
+
+    super(stringifiedData);
+
+    // Save a copy of the original non-stringified data
+    this.originalData = data;
+  }
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps> {
@@ -72,8 +103,12 @@ export const ErrorBoundaryContext: FC = ({ children }) => {
     <errorBoundaryContext.Provider value={ctx}>
       <ErrorBoundary
         error={error}
-        onError={(error, errorInfo) => {
-          setError({ error, errorInfo });
+        onError={(error: Error | WrappedError, errorInfo) => {
+          if (!(error instanceof Error)) {
+            error = new WrappedError(error);
+          }
+
+          setError(error);
           componentDidCatch.current?.(error, errorInfo);
         }}
       >
