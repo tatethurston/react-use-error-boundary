@@ -25,7 +25,7 @@
 
 ## What is this? 🧐
 
-React 16 introduced [Error Boundaries](https://reactjs.org/docs/error-boundaries.html). As of React 17, there still is [not an equivalent hook](https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes) for function components.
+React 16 introduced [Error Boundaries](https://reactjs.org/docs/error-boundaries.html). As of React 18, there still is [no equivalent hook](https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes) for function components.
 
 This library draws inspiration from Preact's [useErrorBoundary](https://preactjs.com/guide/v10/hooks/#useerrorboundary) and attempts to recreate a similar API.
 
@@ -81,9 +81,25 @@ const App = withErrorBoundary({ children }) => {
 };
 ```
 
-Note that in addition to the hook, the component must be wrapped with `withErrorBoundary`. This function wraps the component with an Error Boundary and a context provider. Alternatively, the `<ErrorBoundaryContext>` component from this library may be placed in your component tree, above each component using `useErrorBoundary`.
+Note that in addition to the hook, the component must be wrapped with `withErrorBoundary`. This function wraps the component with an Error Boundary and a context provider.
 
 This was done to avoid hooking into React internals, which would otherwise be required. The hope is that the eventual React hook solution will present a similar API, and users can easily migrate by removing the `withErrorBoundary` wrapper.
+
+Alternatively, the `<ErrorBoundaryContext>` component from this library may be placed in your component tree, above each component using `useErrorBoundary`, instead of wrapping the component with `withErrorBoundary`:
+
+```jsx
+import { ErrorBoundaryContext, useErrorBoundary } from "react-use-error-boundary";
+
+const App = ({ children }) => {
+  // ... see function body in example above
+};
+
+export default (
+  <ErrorBoundaryContext>
+    <App />
+  </ErrorBoundaryContext>
+);
+```
 
 For a full project example take a look at the [example](https://github.com/tatethurston/react-use-error-boundary/blob/main/example).
 
