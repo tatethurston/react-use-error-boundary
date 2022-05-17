@@ -10,13 +10,21 @@ import React, {
   useMemo,
   useRef,
   ComponentType,
+  ErrorInfo,
 } from "react";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ComponentDidCatch = ComponentLifecycle<{}, {}>["componentDidCatch"];
 
-interface ErrorBoundaryProps {
+type ErrorType = ErrorData | undefined;
+
+interface ErrorData {
   error: unknown;
+  errorInfo: ErrorInfo;
+}
+
+interface ErrorBoundaryProps {
+  error: ErrorType;
   onError: NonNullable<ComponentDidCatch>;
 }
 
@@ -39,18 +47,18 @@ const noop = () => false;
 
 interface ErrorBoundaryCtx {
   componentDidCatch: MutableRefObject<ComponentDidCatch>;
-  error: boolean;
-  setError: (error: boolean) => void;
+  error: ErrorType;
+  setError: (error: ErrorType) => void;
 }
 
 const errorBoundaryContext = createContext<ErrorBoundaryCtx>({
   componentDidCatch: { current: undefined },
-  error: false,
+  error: undefined,
   setError: noop,
 });
 
 export const ErrorBoundaryContext: FC = ({ children }) => {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<ErrorType>(undefined);
   const componentDidCatch = useRef<ComponentDidCatch>();
   const ctx = useMemo(
     () => ({
@@ -64,9 +72,9 @@ export const ErrorBoundaryContext: FC = ({ children }) => {
     <errorBoundaryContext.Provider value={ctx}>
       <ErrorBoundary
         error={error}
-        onError={(...args) => {
-          setError(true);
-          componentDidCatch.current?.(...args);
+        onError={(error, errorInfo) => {
+          setError({ error, errorInfo });
+          componentDidCatch.current?.(error, errorInfo);
         }}
       >
         {children}
@@ -86,7 +94,7 @@ export function withErrorBoundary<Props = Record<string, unknown>>(
   );
 }
 
-type UseErrorBoundaryReturn = [error: boolean, resetError: () => void];
+type UseErrorBoundaryReturn = [hasErrored: ErrorType, resetError: () => void];
 
 export function useErrorBoundary(
   componentDidCatch?: ComponentDidCatch
@@ -94,7 +102,7 @@ export function useErrorBoundary(
   const ctx = useContext(errorBoundaryContext);
   ctx.componentDidCatch.current = componentDidCatch;
   const resetError = useCallback(() => {
-    ctx.setError(false);
+    ctx.setError(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

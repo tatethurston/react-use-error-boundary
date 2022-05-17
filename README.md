@@ -45,17 +45,19 @@ Just trying things out or want to skip the build step? Use the unpkg URL:
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
 
 ```jsx
-// error = Whether an error was caught (true/false).
+// error = `undefined`, or an object with the `error` and `errorInfo` keys.
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
 //   to recover from errors.
-const [error, resetError] = useErrorBoundary();
+const [errorData, resetError] = useErrorBoundary();
 ```
 
 For application monitoring, it's often useful to notify a service of any errors. `useErrorBoundary` accepts an optional callback that will be invoked when an error is encountered.
 
 ```jsx
-const [error] = useErrorBoundary((error) => callMyApi(error.message));
+const [errorData] = useErrorBoundary((error, errorInfo) =>
+  logErrorToMyService(error, errorInfo)
+);
 ```
 
 A full example may look like this:
@@ -63,22 +65,25 @@ A full example may look like this:
 ```jsx
 import { withErrorBoundary, useErrorBoundary } from "react-use-error-boundary";
 
-const App = withErrorBoundary({ children }) => {
-  const [error, resetError] = useErrorBoundary(
-    error => callMyApi(error.message)
+const App = withErrorBoundary(({ children }) => {
+  const [errorData, resetError] = useErrorBoundary(
+    // You can optionally log the error to an error reporting service
+    (error, errorInfo) => logErrorToMyService(error, errorInfo)
   );
 
-  if (error) {
+  if (errorData) {
+    const { error } = errorData;
+
     return (
       <div>
-        <p>An error occurred!</p>
+        <p>{error.message}</p>
         <button onClick={resetError}>Try again</button>
       </div>
     );
   }
 
-  return <div>{children}</div>
-};
+  return <div>{children}</div>;
+});
 ```
 
 Note that in addition to the hook, the component must be wrapped with `withErrorBoundary`. This function wraps the component with an Error Boundary and a context provider. Alternatively, the `<ErrorBoundaryContext>` component from this library may be placed in your component tree, above each component using `useErrorBoundary`.
