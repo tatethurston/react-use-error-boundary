@@ -53,7 +53,10 @@ export class WrappedError extends Error {
     }
 
     super(stringifiedData);
-
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, WrappedError)
+    }
     // Save a copy of the original non-stringified data
     this.originalData = data;
   }
