@@ -15,9 +15,48 @@ import React, {
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ComponentDidCatch = ComponentLifecycle<{}, {}>["componentDidCatch"];
 
+type ErrorType = WrappedError | Error | undefined;
+
 interface ErrorBoundaryProps {
-  error: unknown;
+  error: ErrorType;
   onError: NonNullable<ComponentDidCatch>;
+}
+
+/**
+ * Wrapper that is instantiated for thrown primitives so that consumers always work with the `Error` interface.
+ * The thrown primitive can be accessed via the `originalData` property.
+ */
+export class WrappedError extends Error {
+  /**
+   * A reference to the original data passed to the error constructor,
+   * before being stringified into the error message.
+   */
+  originalData: unknown;
+
+  constructor(error: unknown) {
+
+  console.warn("react-use-error-boundary: A value was thrown that is not an instance of Error. Thrown values should be instantiated with JavaScript's Error constructor.");
+    /*
+      Some values cannot be converted into a string, such as Symbols
+      or certain Object instances (e.g., `Object.create(null)`).
+
+      This try/catch ensures that our silent error wrapper doesn't
+      cause an unexpected error for the user, bricking the React app
+      when we're meant to be preventing errors doing so.
+    */
+    try {
+      super(error);
+    } catch {
+      super("react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value may can be accessed via the originalError property");
+    }
+    this.name = "WrappedError";
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, WrappedError)
+    }
+    // Save a copy of the original non-stringified data
+    this.originalError = error;
+  }
 }
 
 class ErrorBoundary extends Component<ErrorBoundaryProps> {
@@ -39,18 +78,18 @@ const noop = () => false;
 
 interface ErrorBoundaryCtx {
   componentDidCatch: MutableRefObject<ComponentDidCatch>;
-  error: boolean;
-  setError: (error: boolean) => void;
+  error: ErrorType;
+  setError: (error: ErrorType) => void;
 }
 
 const errorBoundaryContext = createContext<ErrorBoundaryCtx>({
   componentDidCatch: { current: undefined },
-  error: false,
+  error: undefined,
   setError: noop,
 });
 
 export const ErrorBoundaryContext: FC = ({ children }) => {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<ErrorType>(undefined);
   const componentDidCatch = useRef<ComponentDidCatch>();
   const ctx = useMemo(
     () => ({
@@ -64,9 +103,13 @@ export const ErrorBoundaryContext: FC = ({ children }) => {
     <errorBoundaryContext.Provider value={ctx}>
       <ErrorBoundary
         error={error}
-        onError={(...args) => {
-          setError(true);
-          componentDidCatch.current?.(...args);
+        onError={(error: Error | WrappedError, errorInfo) => {
+          if (!(error instanceof Error)) {
+            error = new WrappedError(error);
+          }
+
+          setError(error);
+          componentDidCatch.current?.(error, errorInfo);
         }}
       >
         {children}
@@ -86,7 +129,7 @@ export function withErrorBoundary<Props = Record<string, unknown>>(
   );
 }
 
-type UseErrorBoundaryReturn = [error: boolean, resetError: () => void];
+type UseErrorBoundaryReturn = [hasErrored: ErrorType, resetError: () => void];
 
 export function useErrorBoundary(
   componentDidCatch?: ComponentDidCatch
@@ -94,7 +137,7 @@ export function useErrorBoundary(
   const ctx = useContext(errorBoundaryContext);
   ctx.componentDidCatch.current = componentDidCatch;
   const resetError = useCallback(() => {
-    ctx.setError(false);
+    ctx.setError(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
