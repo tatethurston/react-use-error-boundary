@@ -45,7 +45,7 @@ Just trying things out or want to skip the build step? Use the unpkg URL:
 Whenever the component or a child component throws an error you can use this hook to catch the error and display an error UI to the user.
 
 ```jsx
-// error = `undefined`, or an Error object
+// error = The error that was caught or `undefined` if nothing errored. If something other than an instance of `Error` was thrown, it will be wrapped in an `Error` object by calling `new Error()` on the thrown value.
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
 //   to recover from errors.

@@ -23,9 +23,8 @@ interface ErrorBoundaryProps {
 }
 
 /**
- * Wrapper around the `Error` class to allow us to create an error
- * message while retaining the originally thrown data as an attribute
- * on the class.
+ * Wrapper that is instantiated for thrown primitives so that consumers always work with the `Error` interface.
+ * The thrown primitive can be accessed via the `originalData` property.
  */
 export class WrappedError extends Error {
   /**
@@ -34,10 +33,9 @@ export class WrappedError extends Error {
    */
   originalData: unknown;
 
-  constructor(data?: unknown) {
-    let stringifiedData =
-      "It was not possible to parse the data thrown as a string.";
+  constructor(error: unknown) {
 
+  console.warn("react-use-error-boundary: A value was thrown that is not an instance of Error. Thrown values should be instantiated with JavaScript's Error constructor.");
     /*
       Some values cannot be converted into a string, such as Symbols
       or certain Object instances (e.g., `Object.create(null)`).
@@ -47,18 +45,17 @@ export class WrappedError extends Error {
       when we're meant to be preventing errors doing so.
     */
     try {
-      stringifiedData = String(data);
+      super(error);
     } catch {
-      // Ignore errors
+      super("react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value may can be accessed via the originalError property");
     }
-
-    super(stringifiedData);
+    this.name = "WrappedError";
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, WrappedError)
     }
     // Save a copy of the original non-stringified data
-    this.originalData = data;
+    this.originalError = error;
   }
 }
 
