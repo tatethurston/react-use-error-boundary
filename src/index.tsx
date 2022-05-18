@@ -28,14 +28,14 @@ interface ErrorBoundaryProps {
  */
 export class WrappedError extends Error {
   /**
-   * A reference to the original data passed to the error constructor,
-   * before being stringified into the error message.
+   * The thrown error.
    */
-  originalData: unknown;
+  originalError: unknown;
 
   constructor(error: unknown) {
-
-  console.warn("react-use-error-boundary: A value was thrown that is not an instance of Error. Thrown values should be instantiated with JavaScript's Error constructor.");
+    console.warn(
+      "react-use-error-boundary: A value was thrown that is not an instance of Error. Thrown values should be instantiated with JavaScript's Error constructor."
+    );
     /*
       Some values cannot be converted into a string, such as Symbols
       or certain Object instances (e.g., `Object.create(null)`).
@@ -45,15 +45,16 @@ export class WrappedError extends Error {
       when we're meant to be preventing errors doing so.
     */
     try {
-      super(error);
+      super(error as string);
     } catch {
-      super("react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value may can be accessed via the originalError property");
+      super(
+        "react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value may can be accessed via the originalError property"
+      );
     }
     this.name = "WrappedError";
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, WrappedError)
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    Error.captureStackTrace?.(this, WrappedError);
     // Save a copy of the original non-stringified data
     this.originalError = error;
   }
