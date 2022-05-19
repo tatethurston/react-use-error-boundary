@@ -8,14 +8,16 @@ const ThrowError: FC = () => {
 
 const App: FC = withErrorBoundary(() => {
   const [shouldThrow, setShouldThrow] = useState(false);
-  const [error, resetError] = useErrorBoundary(() => {
+  const [error, resetError] = useErrorBoundary((error, errorInfo) => {
     console.info("componentDidCatch handler called");
+    console.error(error);
+    console.error(errorInfo);
   });
 
   if (error) {
     return (
       <>
-        <div>Error</div>
+        <div>Error: {error.message}</div>
         <button
           onClick={() => {
             setShouldThrow(false);

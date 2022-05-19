@@ -26,7 +26,7 @@ interface ErrorBoundaryProps {
  * Wrapper that is instantiated for thrown primitives so that consumers always work with the `Error` interface.
  * The thrown primitive can be accessed via the `originalData` property.
  */
-export class WrappedError extends Error {
+export class ReactUseErrorBoundaryWrappedError extends Error {
   /**
    * The thrown error.
    */
@@ -51,10 +51,10 @@ export class WrappedError extends Error {
         "react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value can be accessed via the 'originalError' property"
       );
     }
-    this.name = "WrappedError";
+    this.name = "ReactUseErrorBoundaryWrappedError";
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    Error.captureStackTrace?.(this, WrappedError);
+    Error.captureStackTrace?.(this, ReactUseErrorBoundaryWrappedError);
     // Save a copy of the original non-stringified data
     this.originalError = error;
   }
@@ -111,7 +111,7 @@ export function ErrorBoundaryContext({
         error={error}
         onError={(error, errorInfo) => {
           if (!(error instanceof Error)) {
-            error = new WrappedError(error);
+            error = new ReactUseErrorBoundaryWrappedError(error);
           }
 
           setError(error);

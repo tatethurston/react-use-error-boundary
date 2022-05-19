@@ -15,6 +15,7 @@ jobs:
           node-version: "16.x"
           cache: "yarn"
       - run: yarn
+      - run: yarn package:build
       - run: yarn lint
       - run: yarn test:ci && yarn codecov --token=$CODECOV_TOKEN
         env:

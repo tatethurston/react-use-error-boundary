@@ -32,7 +32,7 @@
     "package:prune": "find dist -name test.* -delete",
     "test": "jest src/*",
     "test:ci": "yarn test --coverage",
-    "typecheck": "yarn tsc --noEmit",
+    "typecheck": "yarn tsc --noEmit && (cd example && yarn tsc --noEmit)",
     "typecheck:watch": "yarn typecheck --watch"
   },
   "sideEffects": false,
