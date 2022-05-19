@@ -24,9 +24,9 @@ interface ErrorBoundaryProps {
 
 /**
  * Wrapper that is instantiated for thrown primitives so that consumers always work with the `Error` interface.
- * The thrown primitive can be accessed via the `originalData` property.
+ * The thrown primitive can be accessed via the `originalError` property.
  */
-export class ReactUseErrorBoundaryWrappedError extends Error {
+class ReactUseErrorBoundaryWrappedError extends Error {
   /**
    * The thrown error.
    */

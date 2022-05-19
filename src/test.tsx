@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 
 // suppress error boundary console errors in test output
 jest.spyOn(global.console, "error").mockImplementation();
+jest.spyOn(global.console, "warn").mockImplementation();
 
 const ThrowError: FC = () => {
   throw new Error("Bombs away 💣");
@@ -28,6 +29,37 @@ describe(useErrorBoundary, () => {
     render(<Example />);
 
     expect(componentDidCatch).toHaveBeenCalledTimes(1);
+  });
+
+  it("wraps thrown values that are not Error instances with ReactUseErrorBoundaryWrappedError", () => {
+    const thrownError = "Bombs away 💣";
+
+    const ThrowNonError: FC = () => {
+      throw thrownError;
+    };
+
+    let error;
+
+    const Example: FC = withErrorBoundary(() => {
+      [error] = useErrorBoundary();
+      if (error) {
+        return <p>Error: {error.message}</p>;
+      }
+
+      return <ThrowNonError />;
+    });
+
+    render(<Example />);
+
+    expect(screen.queryByText(/Error:/)).toMatchInlineSnapshot(`
+      <p>
+        Error: 
+        Bombs away 💣
+      </p>
+    `);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    expect((error as any).originalError).toEqual(thrownError);
   });
 
   it("does not invoke the componentDidCatch handler when there is not an error", () => {
