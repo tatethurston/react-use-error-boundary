@@ -53,6 +53,7 @@ Whenever the component or a child component throws an error you can use this hoo
 // resetError = Call this function to mark an error as resolved. It's
 //   up to your app to decide what that means and if it is possible
 //   to recover from errors.
+//
 const [error, resetError] = useErrorBoundary();
 ```
 
