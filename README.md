@@ -37,7 +37,7 @@ This library draws inspiration from Preact's [useErrorBoundary](https://preactjs
 Just trying things out or want to skip the build step? Use the unpkg URL:
 
 ```
-<script src="https://unpkg.com/react-use-error-boundary/dist/index.production.js"></script>
+<script src="https://unpkg.com/react-use-error-boundary/index.production.js"></script>
 ```
 
 ## Examples 🚀
@@ -119,7 +119,7 @@ Because React recreates the component tree from scratch after catching an error,
 
 🎁 Zero run time dependencies
 
-🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@1.0.2)
+🦶 Small footprint [673 B minified and gzipped](https://bundlephobia.com/result?p=react-use-error-boundary@2.0.0)
 
 🪐 Isomorphic / Universal -- safe to run in any JS context: the browser or on a server
 

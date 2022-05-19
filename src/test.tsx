@@ -47,7 +47,7 @@ describe(useErrorBoundary, () => {
     expect(componentDidCatch).toHaveBeenCalledTimes(0);
   });
 
-  it("invoking resetError handler resets the error state", () => {
+  it("invoking resetError handler resets the error state", async () => {
     const Example: FC = withErrorBoundary(() => {
       const [shouldThrow, setShouldThrow] = useState(false);
       const [error, resetError] = useErrorBoundary();
@@ -87,12 +87,12 @@ describe(useErrorBoundary, () => {
     expect(screen.queryByText("Happy Path")).not.toBeNull();
     expect(screen.queryByText("Error")).toBeNull();
 
-    userEvent.click(screen.getByText("Throw Error"));
+    await userEvent.click(screen.getByText("Throw Error"));
 
     expect(screen.queryByText("Happy Path")).toBeNull();
     expect(screen.queryByText("Error")).not.toBeNull();
 
-    userEvent.click(screen.getByText("Reset Error"));
+    await userEvent.click(screen.getByText("Reset Error"));
 
     expect(screen.queryByText("Happy Path")).not.toBeNull();
     expect(screen.queryByText("Error")).toBeNull();
