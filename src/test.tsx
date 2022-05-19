@@ -31,35 +31,60 @@ describe(useErrorBoundary, () => {
     expect(componentDidCatch).toHaveBeenCalledTimes(1);
   });
 
-  it("wraps thrown values that are not Error instances with ReactUseErrorBoundaryWrappedError", () => {
-    const thrownError = "Bombs away 💣";
+  describe("ReactUseErrorBoundaryWrappedError", () => {
+    it("wraps thrown values that are not Error instances with ReactUseErrorBoundaryWrappedError", () => {
+      let error;
 
-    const ThrowNonError: FC = () => {
-      throw thrownError;
-    };
+      const ThrowNonError: FC = () => {
+        throw "Bombs away 💣";
+      };
 
-    let error;
+      const Example: FC = withErrorBoundary(() => {
+        [error] = useErrorBoundary();
+        if (error) {
+          return <p>Error: {error.message}</p>;
+        }
 
-    const Example: FC = withErrorBoundary(() => {
-      [error] = useErrorBoundary();
-      if (error) {
-        return <p>Error: {error.message}</p>;
-      }
+        return <ThrowNonError />;
+      });
 
-      return <ThrowNonError />;
+      render(<Example />);
+
+      expect(screen.queryByText(/Error:/)).toMatchInlineSnapshot(`
+        <p>
+          Error: 
+          Bombs away 💣
+        </p>
+      `);
     });
 
-    render(<Example />);
+    it("handles thrown values that can not be passed to Error's constructor", () => {
+      let error: Error | undefined;
 
-    expect(screen.queryByText(/Error:/)).toMatchInlineSnapshot(`
-      <p>
-        Error: 
-        Bombs away 💣
-      </p>
-    `);
+      const thrownError = Symbol("Foo");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    expect((error as any).originalError).toEqual(thrownError);
+      const ThrowNonError: FC = () => {
+        throw thrownError;
+      };
+
+      const Example: FC = withErrorBoundary(() => {
+        [error] = useErrorBoundary();
+        if (error) {
+          return null;
+        }
+
+        return <ThrowNonError />;
+      });
+
+      render(<Example />);
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unsafe-member-access
+      expect(error!.message).toMatchInlineSnapshot(
+        `"react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value can be accessed via the 'originalError' property"`
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      expect((error as any).originalError).toEqual(thrownError);
+    });
   });
 
   it("does not invoke the componentDidCatch handler when there is not an error", () => {
