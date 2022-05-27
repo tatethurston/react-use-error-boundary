@@ -1,7 +1,5 @@
 {
   "name": "react-use-error-boundary-development",
-  "version": "1.0.2",
-  "description": "A React error boundary hook for function components",
   "license": "MIT",
   "author": "Tate <tatethurston@gmail.com>",
   "homepage": "https://github.com/tatethurston/react-use-error-boundary#readme",
@@ -13,7 +11,8 @@
     "url": "https://github.com/tatethurston/react-use-error-boundary/issues"
   },
   "scripts": {
-    "build": "yarn clean && yarn tsc && yarn webpack",
+    "build:commonjs": "yarn tsc",
+    "build:module": "yarn tsc --module esnext --outDir dist/module",
     "build:watch": "yarn build --watch",
     "clean": "rm -rf dist/*",
     "lint": "yarn typecheck && prettier --check . && prettier-package-json --list-different package.json && eslint .",
@@ -21,18 +20,13 @@
     "lint:fix:md": "prettier --write '*.md'",
     "lint:fix:package": "prettier-package-json --write package.json",
     "lint:fix:ts": "eslint --fix './src/**/*.ts{,x}'",
-    "package:build": "yarn install && yarn clean && yarn build && yarn package:prune && yarn package:copy:files",
+    "package:build": "yarn install && yarn clean && yarn build:commonjs && yarn build:module && webpack && yarn package:prune && yarn package:copy:files",
     "package:copy:files": "cp ./LICENSE ./README.md dist/ && cp ./public.package.json dist/package.json",
     "package:prune": "find dist -name test.* -delete",
     "test": "jest src/*",
     "test:ci": "yarn test --coverage",
     "typecheck": "yarn tsc --noEmit && (cd example && yarn && yarn tsc --noEmit)",
     "typecheck:watch": "yarn typecheck --watch"
-  },
-  "sideEffects": false,
-  "types": "dist/index.d.ts",
-  "peerDependencies": {
-    "react": ">= 16.8"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.17.12",
@@ -61,13 +55,6 @@
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2"
   },
-  "keywords": [
-    "componentDidCatch",
-    "error boundary hook",
-    "react error boundary",
-    "react hook",
-    "useErrorBoundary"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "yarn lint:fix"

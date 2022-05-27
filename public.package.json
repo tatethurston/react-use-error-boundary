@@ -1,6 +1,6 @@
 {
   "name": "react-use-error-boundary",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A React error boundary hook for function components",
   "license": "MIT",
   "author": "Tate <tatethurston@gmail.com>",
@@ -12,12 +12,20 @@
   "bugs": {
     "url": "https://github.com/tatethurston/react-use-error-boundary/issues"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.js",
   "sideEffects": false,
   "types": "index.d.ts",
   "peerDependencies": {
     "react": ">= 16.8"
+  },
+  "main": "index.js",
+  "module": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./module/index.js",
+      "module": "./module/index.js",
+      "default": "./index.js"
+    }
   },
   "keywords": [
     "componentDidCatch",
