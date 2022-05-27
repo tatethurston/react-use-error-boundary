@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.1
+
+Publish CommonJS and ESM.
+
 ## v2.0.0
 
 ```js
