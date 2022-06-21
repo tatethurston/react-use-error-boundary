@@ -17,14 +17,14 @@
   "peerDependencies": {
     "react": ">= 16.8"
   },
-  "main": "index.js",
-  "module": "module",
+  "main": "./cjs/index.js",
+  "module": "./index.js",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": "./module/index.js",
-      "module": "./module/index.js",
-      "default": "./index.js"
+      "import": "./index.js",
+      "module": "./index.js",
+      "default": "./cjs/index.js"
     }
   },
   "keywords": [
