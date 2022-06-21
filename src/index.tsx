@@ -2,7 +2,6 @@ import React, {
   Component,
   useState,
   useCallback,
-  ComponentLifecycle,
   createContext,
   useContext,
   MutableRefObject,
@@ -12,58 +11,22 @@ import React, {
   ReactNode,
   PropsWithChildren,
   ReactElement,
+  ErrorInfo,
 } from "react";
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type ComponentDidCatch = ComponentLifecycle<{}, {}>["componentDidCatch"];
+type ComponentDidCatch = (error: unknown, errorInfo: ErrorInfo) => void;
 
 interface ErrorBoundaryProps {
-  error: Error | undefined;
-  onError: NonNullable<ComponentDidCatch>;
-}
-
-/**
- * Wrapper that is instantiated for thrown primitives so that consumers always work with the `Error` interface.
- * The thrown primitive can be accessed via the `originalError` property.
- */
-class ReactUseErrorBoundaryWrappedError extends Error {
-  /**
-   * The thrown error.
-   */
-  originalError: unknown;
-
-  constructor(error: unknown) {
-    console.warn(
-      "react-use-error-boundary: A value was thrown that is not an instance of Error. Thrown values should be instantiated with JavaScript's Error constructor."
-    );
-    /*
-      Some values cannot be converted into a string, such as Symbols
-      or certain Object instances (e.g., `Object.create(null)`).
-
-      This try/catch ensures that our silent error wrapper doesn't
-      cause an unexpected error for the user, bricking the React app
-      when we're meant to be preventing errors doing so.
-    */
-    try {
-      super(error as string);
-    } catch {
-      super(
-        "react-use-error-boundary: Could not instantiate an Error with the thrown value. The thrown value can be accessed via the 'originalError' property"
-      );
-    }
-    this.name = "ReactUseErrorBoundaryWrappedError";
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    Error.captureStackTrace?.(this, ReactUseErrorBoundaryWrappedError);
-    // Save a copy of the original non-stringified data
-    this.originalError = error;
-  }
+  error: unknown | undefined;
+  onError: ComponentDidCatch;
 }
 
 class ErrorBoundary extends Component<PropsWithChildren<ErrorBoundaryProps>> {
   displayName = "ReactUseErrorBoundary";
 
-  componentDidCatch(...args: Parameters<NonNullable<ComponentDidCatch>>) {
+  componentDidCatch(
+    ...args: Parameters<NonNullable<Component["componentDidCatch"]>>
+  ) {
     // silence React warning:
     // ErrorBoundary: Error boundaries should implement getDerivedStateFromError(). In that method, return a state update to display an error message or fallback UI
     this.setState({});
@@ -78,8 +41,8 @@ class ErrorBoundary extends Component<PropsWithChildren<ErrorBoundaryProps>> {
 const noop = () => false;
 
 interface ErrorBoundaryCtx {
-  componentDidCatch: MutableRefObject<ComponentDidCatch>;
-  error: Error | undefined;
+  componentDidCatch: MutableRefObject<ComponentDidCatch | undefined>;
+  error: unknown | undefined;
   setError: (error: Error | undefined) => void;
 }
 
@@ -95,7 +58,7 @@ export function ErrorBoundaryContext({
 }: {
   children?: ReactNode | undefined;
 }) {
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<unknown>();
   const componentDidCatch = useRef<ComponentDidCatch>();
   const ctx = useMemo(
     () => ({
@@ -110,10 +73,6 @@ export function ErrorBoundaryContext({
       <ErrorBoundary
         error={error}
         onError={(error, errorInfo) => {
-          if (!(error instanceof Error)) {
-            error = new ReactUseErrorBoundaryWrappedError(error);
-          }
-
           setError(error);
           componentDidCatch.current?.(error, errorInfo);
         }}
@@ -129,15 +88,23 @@ export function withErrorBoundary<Props = Record<string, unknown>>(
   WrappedComponent: ComponentType<Props>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): (props: PropsWithChildren<Props>) => ReactElement<any, any> {
-  return (props: Props) => (
-    <ErrorBoundaryContext>
-      <WrappedComponent key="WrappedComponent" {...props} />
-    </ErrorBoundaryContext>
-  );
+  function WithErrorBoundary(props: Props) {
+    return (
+      <ErrorBoundaryContext>
+        <WrappedComponent key="WrappedComponent" {...props} />
+      </ErrorBoundaryContext>
+    );
+  }
+  WithErrorBoundary.displayName = `WithErrorBoundary(${
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    WrappedComponent.displayName ?? WrappedComponent.name ?? "Component"
+  })`;
+
+  return WithErrorBoundary;
 }
 
 type UseErrorBoundaryReturn = [
-  error: Error | undefined,
+  error: unknown | undefined,
   resetError: () => void
 ];
 

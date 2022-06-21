@@ -15,9 +15,10 @@ const App: FC = withErrorBoundary(() => {
   });
 
   if (error) {
+    const message = error instanceof Error ? error.message : (error as string);
     return (
       <>
-        <div>Error: {error.message}</div>
+        <div>Error: {message}</div>
         <button
           onClick={() => {
             setShouldThrow(false);

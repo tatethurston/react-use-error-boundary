@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.0.0
+
+```js
+const [error] = useErrorBoundary();
+```
+
+- The `error` wrapping that was introduced in v2 has been removed. `error` will now be the error that was caught without any wrapping for thrown primitives. The types have been updated to `unknown` to reflect that thrown JavaScript errors may be any type not just instances of `Error`.
+
+- `withErrorBoundary` now propagates the wrapped component display name for improved debugging with React dev tools. It will display as `WithErrorBoundary(${Component.displayName})`.
+
 ## v2.0.1
 
 Publish CommonJS and ESM.
